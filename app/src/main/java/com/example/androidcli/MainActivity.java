@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         androidConsole.setMovementMethod(new ScrollingMovementMethod());
         consoleInputText = findViewById(R.id.androidConsoleInput);
         setupSendButton();
+        androidConsole.append("\nAndroidCLI>");
     }
 
     //this method should print the logcat output to the TextView
@@ -52,10 +53,19 @@ public class MainActivity extends AppCompatActivity {
         {
             String consoleCommand = consoleInput.getText().toString();
 
+            androidConsole.append("\nAndroidCLI>"+consoleCommand+"\n");
+
             if (consoleCommand.equals(""))
             {
                 Toast.makeText(this, "Please enter a command", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            else
+            if (consoleCommand.equals("clear"))
+            {
+               androidConsole.setText("");
+               androidConsole.append("\nAndroidCLI>");
+               return;
             }
 
             StringBuilder commandOutput = runAndGetOuput(consoleCommand);
