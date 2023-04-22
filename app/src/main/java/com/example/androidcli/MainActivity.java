@@ -1,5 +1,6 @@
 package com.example.androidcli;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -45,34 +46,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //this method should print the logcat output to the TextView
-    void sendCommand(TextView t, EditText editText)
+    void sendCommand(TextView console, EditText consoleInput)
     {
         try
         {
-            String ConsoleCommand = editText.getText().toString();
+            String consoleCommand = consoleInput.getText().toString();
 
-            if (ConsoleCommand.equals(""))
+            if (consoleCommand.equals(""))
             {
                 Toast.makeText(this, "Please enter a command", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-                Process process = Runtime.getRuntime().exec(ConsoleCommand);
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-
-                StringBuilder log=new StringBuilder();
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    log.append(line+"\n");
-                }
-                androidConsole.append(log.toString());
-
+            StringBuilder commandOutput = runAndGetOuput(consoleCommand);
+            androidConsole.append(commandOutput.toString());
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            t.append(e.toString());
+            console.append(e.toString());
         }
+    }
+
+    @NonNull
+    private StringBuilder runAndGetOuput(String consoleCommand) throws IOException
+    {
+        Process process = runCommandAndGetTheProcess(consoleCommand);
+        BufferedReader bufferedReader = getProcessOutputStream(process);
+        StringBuilder resultToDisplayOnConsole=new StringBuilder();
+        readLinesToStringBuilder(bufferedReader, resultToDisplayOnConsole);
+        return resultToDisplayOnConsole;
+    }
+
+    @NonNull
+    private BufferedReader getProcessOutputStream(Process process) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        return bufferedReader;
+    }
+
+    private Process runCommandAndGetTheProcess(String consoleCommand) throws IOException {
+        Process process = Runtime.getRuntime().exec(consoleCommand);
+        return process;
+    }
+
+    private void readLinesToStringBuilder(BufferedReader bufferedReader, StringBuilder log) throws IOException
+    {
+        String line = "";
+        while ((line = bufferedReader.readLine()) != null)
+            log.append(line+"\n");
     }
 }
