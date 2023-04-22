@@ -46,8 +46,8 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/androidConsoleInput"
-        android:layout_width="282dp"
-        android:layout_height="51dp"
+        android:layout_width="218dp"
+        android:layout_height="55dp"
         android:layout_marginStart="16dp"
         android:hint="enter command here"
         android:textColorHighlight="#9D5C5C"
